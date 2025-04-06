@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">CryptoTracker</string>
+    <string name="error_request_timeout">Request Timeout</string>
+    <string name="error_too_many_request">It seems quto exceeded</string>
+    <string name="no_internet">No internet</string>
+    <string name="server_error">Server facing some error, Try after some time</string>
+    <string name="error_serial">Couldn\'t serialize data</string>
+    <string name="unkown">Unknown Error occured</string>
+    <string name="market_cap">Market Cap</string>
+    <string name="price">Price</string>
+    <string name="change_last_24h">Change Last 24hr</string>
+
+</resources>
