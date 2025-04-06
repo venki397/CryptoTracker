@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.venki.cryptotracker.domain.CoinDataSource
 import com.venki.cryptotracker.domain.onError
 import com.venki.cryptotracker.domain.onSuccess
+import com.venki.cryptotracker.presentation.coin_detail.components.DataPoint
 import com.venki.cryptotracker.presentation.coin_list.CoinListEvent
 import com.venki.cryptotracker.presentation.coin_list.CoinListState
 import com.venki.cryptotracker.presentation.models.CoinListActions
+import com.venki.cryptotracker.presentation.models.CoinUi
 import com.venki.cryptotracker.presentation.models.toCoinUI
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +20,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class CoinListViewModel(
     private val coinDataSource: CoinDataSource
@@ -36,12 +40,43 @@ class CoinListViewModel(
     private val _events = Channel<CoinListEvent>()
     val events = _events.receiveAsFlow()
 
-    fun onAction(actions: CoinListActions){
-        when(actions){
+    fun onAction(actions: CoinListActions) {
+        when (actions) {
             is CoinListActions.OnCoinClick -> {
-                _state.update { it.copy(
-                    selectedCoin = actions.coinUi
-                ) }
+                selectCoin(actions.coinUi)
+            }
+        }
+    }
+
+    private fun selectCoin(coinUi: CoinUi) {
+        _state.update {
+            it.copy(
+                selectedCoin = coinUi
+            )
+        }
+
+        viewModelScope.launch {
+            coinDataSource.getCoinHistory(
+                coinId = coinUi.id,
+                start = ZonedDateTime.now().minusDays(7),
+                end = ZonedDateTime.now()
+            ).onSuccess { history ->
+                val dataPoints = history.sortedBy { it.dateTime }.map {
+                    DataPoint(
+                        x = it.dateTime.hour.toFloat(),
+                        y = it.priceUsd.toFloat(),
+                        xLabel = DateTimeFormatter.ofPattern("ha\nM/d").format(it.dateTime)
+                    )
+                }
+                _state.update {
+                    it.copy(
+                        selectedCoin = it.selectedCoin?.copy(
+                            coinPriceHistory = dataPoints
+                        )
+                    )
+                }
+            }.onError { networkError ->
+                _events.send(CoinListEvent.Error(networkError))
             }
         }
     }

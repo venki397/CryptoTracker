@@ -2,6 +2,7 @@ package com.venki.cryptotracker.presentation.models
 
 import androidx.annotation.DrawableRes
 import com.venki.cryptotracker.domain.Coin
+import com.venki.cryptotracker.presentation.coin_detail.components.DataPoint
 import com.venki.cryptotracker.util.getDrawableIdForCoin
 import java.text.NumberFormat
 import java.util.Locale
@@ -14,7 +15,8 @@ data class CoinUi(
     val marketCapUsd : DisplayableNumber,
     val priceUsd : DisplayableNumber,
     val changePercent24Hr : DisplayableNumber,
-    @DrawableRes val iconRes : Int
+    @DrawableRes val iconRes : Int,
+    val coinPriceHistory : List<DataPoint> = emptyList()
 )
 
 data class DisplayableNumber(
