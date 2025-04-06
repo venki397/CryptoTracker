@@ -17,9 +17,8 @@ CryptoTracker is an Android application that allows users to track cryptocurrenc
 
 ## Screenshots
 
-_(Optional: Include 1-3 screenshots to showcase your app's main features.  Replace the placeholder paths with actual paths to your screenshots within the repository.)_
 
-![Coin List1](screenshots/list_light.png)![Coin List2](screenshots/list_dark.png)
+![Coin List1](screenshots/list_light.png|width=100)![Coin List2](screenshots/list_dark.png)
 _A screenshot of the main coin list._
 
 ![Coin Details1](screenshots/detail_light.png)![Coin Details2](screenshots/detail_dark.png)
